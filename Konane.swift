@@ -122,7 +122,7 @@ class KonaneGameState {
     }
 
     func isValid(blackRemove: (x: Int, y: Int)) -> Bool {
-        if blackRemove == (0, 0) || blackRemove == (15, 0) || blackRemove == (0, 15) || blackRemove == (15, 15) {
+        if blackRemove == (0, 0) || blackRemove == (15, 0) || blackRemove == (0, 15) || blackRemove == (15, 15) || blackRemove == (7, 7) {
             return true
         } else {
             return false
@@ -130,8 +130,7 @@ class KonaneGameState {
     }
 
     func isValid(whiteRemove: (x: Int, y: Int)) -> Bool {
-        print ("Did not do yet")
-        return true
+   
     }
 
     func perform(move: KonaneMove) {
@@ -162,7 +161,7 @@ class KonaneGameState {
                 isBlackTurn = true
             } 
         } else {
-            print("Your move is invalid. Please input a valid move.")
+            print ("Your move is invalid. Please input a valid move.")
         }
     }  
 
@@ -170,9 +169,7 @@ class KonaneGameState {
         if isValid(blackRemove: blackRemove) {
             board[blackRemove.x][blackRemove.y] = .empty
             isBlackTurn = false
-        } else {
-            print("This move is invalid, please input a valid move")
-        }
+        }   
     } 
 
     func perform(whiteRemove: (x: Int, y: Int)) {
@@ -180,8 +177,8 @@ class KonaneGameState {
             board[whiteRemove.x][whiteRemove.y] = .empty
             isBlackTurn = true
         } else {
-            print("Your move is invalid. Please input a valid move.")
-        } 
+            print ("Your move is invalid. Please input a valid move.")
+        }
     } 
 
 
@@ -233,49 +230,81 @@ class KonaneMoveInputSource {
 
 class KonaneMoveInputSourceHuman:KonaneMoveInputSource {
     override func removeFirstPiece(gameState: KonaneGameState) -> (x: Int, y: Int) {
-        print("Black player, enter in the x coordinate of the piece you want to remove.")
-        let firstPieceYCoordinate: Int = Int(readLine()!)!
-        
-        print("Black player, enter in the y coordinate of the piece you want to remove.")
-        let firstPieceXCoordinate: Int = Int(readLine()!)!
 
-        return (x: firstPieceXCoordinate, y:firstPieceYCoordinate)
+        print("Black player, please enter the x coordinate of the piece you want to remove.")
+        var firstPieceYCoordinate = Int(readLine()!)!
+
+        print("Black player, please enter the y coordinate of the piece you want to remove.")
+        var firstPieceXCoordinate = Int(readLine()!)! 
+
+        while !gameState.isValid(blackRemove: (x: firstPieceXCoordinate, y: firstPieceYCoordinate)) {
+            print ("Your move is invalid. Please input a valid move. Enter the x coordinate of the piece you want to remove.")     
+            firstPieceYCoordinate = Int(readLine()!)!
+
+            print ("Enter the y coordinate of the piece you want to remove.")
+            firstPieceXCoordinate = Int(readLine()!)!
+        } 
+
+        return (x: firstPieceXCoordinate, y: firstPieceYCoordinate)
     }
-    
-    override func removeSecondPiece(gameState: KonaneGameState) -> (x: Int, y: Int) {
-        
-        print("White player, enter in the x coordinate of the piece you want to remove.")
-        let secondPieceYCoordinate: Int = Int(readLine()!)!
 
-        print("White player, enter in the y coordinate of the piece you want to remove.")
-        let secondPieceXCoordinate: Int = Int(readLine()!)!
+
+    override func removeSecondPiece(gameState: KonaneGameState) -> (x: Int, y: Int) {
+        print ("White player, enter the x coordinate of the piece you want to remove.")
+        var secondPieceYCoordinate: Int = Int(readLine()!)!
+
+        print ("White player, enter the y coordinate of the piece you want to remove.")    
+        var secondPieceXCoordinate: Int = Int(readLine()!)!
         
-        return (x: secondPieceXCoordinate, y:secondPieceYCoordinate)
+        while !gameState.isValid( whiteRemove: (x: secondPieceXCoordinate, y: secondPieceYCoordinate)) {
+            print ("Your move is invalid. Please enter a valid move. Enter the x coordinate of the piece you want to remove.")
+            secondPieceYCoordinate = Int(readLine()!)!
+
+            print ("Enter the y coordinate of the piece you want to remove.")
+            secondPieceXCoordinate = Int(readLine()!)!
+        } 
+        return (x: secondPieceXCoordinate, y:secondPieceYCoordinate)   
     }
  
     override func nextMove(gameState: KonaneGameState) -> KonaneMove {
-        
+
         if gameState.isBlackTurn {
             print("It is the black player's turn.")
         } else {
             print("It is the white player's turn.")
         }
         
-        print("Enter in the x coordinate of the piece you want to move. As a reminder, X is a black piece and O is a whitepiece.")
-        let fromYCoordinate: Int = Int(readLine()!)!
+        print ("Player, enter the x coordinate of the piece you want to move.")
+        var fromYCoordinate: Int = Int(readLine()!)!
 
-        print("Player, enter in the y coordinate of the piece you want to move")
-        let fromXCoordinate: Int = Int(readLine()!)!
+        print ("Player, enter the y coordinate of the piece you want to move.")
+        var fromXCoordinate: Int = Int(readLine()!)!
 
-        print("Player, enter in the x coordinate of the place you want to move to")
-        let toYCoordinate: Int = Int(readLine()!)!
+        print ("Player, enter the x coordinate of the place you want to move to.")
+        var toYCoordinate: Int = Int(readLine()!)!
 
-        print("Player, enter in the y coordinate of the place you want to move to")
-        let toXCoordinate: Int = Int(readLine()!)!
+        print ("Player, enter the y coordinate of the place you want to move to.")    
+        var toXCoordinate: Int = Int(readLine()!)!
+        
+        var x = KonaneMove(fromX: fromXCoordinate, fromY: fromYCoordinate, toX: toXCoordinate, toY: toYCoordinate)
+        
+        while !gameState.isValid(move: x) {
+            print ("Your move is invalid. Please enter a valid move. Enter the x coordinate of the piece you want to move. As a reminder, X is a black piece and O is a white piece.")
+            fromYCoordinate = Int(readLine()!)!
 
-        let x = KonaneMove(fromX: fromXCoordinate, fromY: fromYCoordinate, toX: toXCoordinate, toY: toYCoordinate)
-        return x 
-    }
+            print ("Enter the y coordinate of the piece you want to move.")
+            fromXCoordinate = Int(readLine()!)!
+
+            print ("Enter the x coordinate of the place you want to move to.")
+            toYCoordinate = Int(readLine()!)!    
+
+            print ("Enter the y coordinate of the place you want to move to.")
+            toXCoordinate = Int(readLine()!)!
+
+            x = KonaneMove(fromX: fromXCoordinate, fromY: fromYCoordinate, toX: toXCoordinate, toY: toYCoordinate)
+        }             
+        return x
+    } 
 }
 
 class cosbe_KonaneMoveInputSourceAI:KonaneMoveInputSource {
